@@ -54,9 +54,9 @@ class REST
      * @param string $endpoint    Type of object to get. managed_object etc
      * @param string $sightlineID Object ID
      *
-     * @return array the output of the API call
+     * @return array Results from the API
      */
-    public function getByID(string $endpoint, string $sightlineID)
+    public function getByID(string $endpoint, string $sightlineID): array
     {
         $url = $this->url . $endpoint . '/' . $sightlineID;
 
@@ -73,9 +73,9 @@ class REST
      * @param int    $perPage    Limit the number of returned objects per page, default 50
      * @param bool   $commitFlag Add config=commited to endpoints which require it, default false
      *
-     * @return array returns an array with the records from the API
+     * @return array Results from the API
      */
-    public function findRest(string $endpoint, ?array $filters = null, int $perPage = 50, $commitFlag = false)
+    public function findRest(string $endpoint, ?array $filters = null, int $perPage = 50, $commitFlag = false): array
     {
         $results = [];
 
@@ -111,9 +111,9 @@ class REST
      * @param string $url  URL to make the request against
      * @param array  $args Optional query arguments to append to the URL
      *
-     * @return array The output of the API call
+     * @return array Results from the API
      */
-    protected function doGetRequest(string $url, ?array $args = null)
+    protected function doGetRequest(string $url, ?array $args = null): array
     {
         $cachedItem = null;
         $options = [];
@@ -151,9 +151,9 @@ class REST
      * @param int    $perPage    Total number of objects per page. (Default 50)
      * @param bool   $commitFlag Add config=commited to endpoints which require it, default false
      *
-     * @return array The output of the API call
+     * @return array Results from the API
      */
-    protected function doMultiGetRequest(string $endpoint, ?array $filters = null, int $perPage = 50, $commitFlag = false)
+    protected function doMultiGetRequest(string $endpoint, ?array $filters = null, int $perPage = 50, bool $commitFlag = false): array
     {
         $cachedItem = null;
         $url = $this->url . $endpoint . '/';
@@ -237,9 +237,9 @@ class REST
      * @param string $type     Type of post request, PATCH, POST
      * @param string $postData json data to send with the post request
      *
-     * @return array The output of the API call
+     * @return array Result from the API
      */
-    protected function doCachedPostRequest(string $url, string $type = 'POST', ?string $postData = null)
+    protected function doCachedPostRequest(string $url, string $type = 'POST', ?string $postData = null): array
     {
         $cachedItem = null;
         if (true === $this->shouldCache) {
@@ -270,9 +270,9 @@ class REST
      * @param string $type     Type of post request, PATCH, POST
      * @param string $postData json data to send with the post request
      *
-     * @return array the output of the API call
+     * @return array Results from the API
      */
-    protected function doPostRequest(string $url, string $type = 'POST', ?string $postData = null)
+    protected function doPostRequest(string $url, string $type = 'POST', ?string $postData = null): array
     {
         $options = [];
 
@@ -286,7 +286,7 @@ class REST
      *
      * @return string Encoded URL string
      */
-    protected function filterToUrl(array $filters)
+    protected function filterToUrl(array $filters): string
     {
         if (isset($filters['type'])) {
             return 'filter=' . $filters['type'] . '/' . $filters['field'] . '.' . $filters['operator'] . '.' . $this->searchFilterToUrl($filters['search']);
@@ -312,7 +312,7 @@ class REST
      *
      * @return string Encoded URL string
      */
-    private function searchFilterToUrl(mixed $search)
+    private function searchFilterToUrl(mixed $search): string
     {
         $searchUrl = [];
 
@@ -336,7 +336,7 @@ class REST
      *
      * @return ResponseInterface the HTTP Client Response Object
      */
-    private function connect(string $method, string $url, array $options = [])
+    private function connect(string $method, string $url, array $options = []): ResponseInterface
     {
         $options['headers'] =
             [
@@ -354,11 +354,11 @@ class REST
     /**
      * Get's the returned content from the request.
      *
-     * @param object $response a Valid HTTP Client reponse object
+     * @param ResponseInterface $response a Valid HTTP Client reponse object
      *
      * @return array the response from the server as an array
      */
-    private function getResult(ResponseInterface $response)
+    private function getResult(ResponseInterface $response): array
     {
         // check the response object is valid.
         //
@@ -395,9 +395,9 @@ class REST
     /**
      * Find an error in the results of the REST API which gave an Error.
      *
-     * @param array $errors an array of errors returned by the API
+     * @param string $errors Errors returned by the API
      */
-    private function findError(array $errors)
+    private function findError(array $errors): string
     {
         $errorMessages = '';
         foreach ($errors as $error) {
@@ -430,7 +430,7 @@ class REST
      *
      * @return string cache key
      */
-    private function getCacheKey(string $url, ?array $args = null)
+    private function getCacheKey(string $url, ?array $args = null): string
     {
         if (null === $args) {
             return $this->cacheKeyPrefix . '_' . sha1($url);
@@ -447,7 +447,7 @@ class REST
      *
      * @return string cache key
      */
-    private function getPostCacheKey(string $url, string $type, string $postData)
+    private function getPostCacheKey(string $url, string $type, string $postData): string
     {
         return $this->cacheKeyPrefix . '_' . sha1($url . $type . $postData);
     }
