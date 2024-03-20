@@ -49,9 +49,9 @@ class WS extends AbstractAPI
      * @param string $queryXML Query XML string
      * @param string $graphXML Graph format XML string
      *
-     * @return string returns a PNG image
+     * @return string A PNG image as a string
      */
-    public function getTrafficGraph(string $queryXML, string $graphXML)
+    public function getTrafficGraph(string $queryXML, string $graphXML): string
     {
         $cachedItem = null;
         $url = $this->url . '/traffic/';
@@ -93,7 +93,7 @@ class WS extends AbstractAPI
      *
      * @return SimpleXMLElement XML traffic data
      */
-    public function getTrafficXML(string $queryXML)
+    public function getTrafficXML(string $queryXML): SimpleXMLElement
     {
         $cachedItem = null;
         $url = $this->url . '/traffic/';
@@ -126,7 +126,7 @@ class WS extends AbstractAPI
      *
      * @return string Request output content
      */
-    private function doHTTPRequest(string $url, array $args)
+    private function doHTTPRequest(string $url, array $args): string
     {
         $args['api_key'] = $this->wsKey;
 
@@ -152,7 +152,7 @@ class WS extends AbstractAPI
      *
      * @return string cache key
      */
-    private function getCacheKey(string $url, array $args)
+    private function getCacheKey(string $url, array $args): string
     {
         return 'sightline_ws_' . sha1($url . http_build_query($args));
     }

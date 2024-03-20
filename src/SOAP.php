@@ -55,9 +55,9 @@ class SOAP extends AbstractAPI
      * @param string $queryXML Query XML string
      * @param string $graphXML Graph format XML string
      *
-     * @return string returns a PNG image
+     * @return string A PNG image as a string
      */
-    public function getTrafficGraph(string $queryXML, string $graphXML)
+    public function getTrafficGraph(string $queryXML, string $graphXML): string
     {
         $cachedItem = null;
         if (true === $this->shouldCache) {
@@ -102,7 +102,7 @@ class SOAP extends AbstractAPI
      *
      * @return SimpleXMLElement XML traffic data
      */
-    public function getTrafficXML(string $queryXML)
+    public function getTrafficXML(string $queryXML): SimpleXMLElement
     {
         $cachedItem = null;
         if (true === $this->shouldCache) {
@@ -140,9 +140,9 @@ class SOAP extends AbstractAPI
      * @param string $command The command string to run
      * @param int    $timeout timeout in seconds
      *
-     * @return string|null returns the output from the CLI or null on error
+     * @return string returns the output from the CLI
      */
-    public function cliRun(string $command, int $timeout = 20)
+    public function cliRun(string $command, int $timeout = 20): string
     {
         $soapClient = $this->connect();
 
@@ -158,7 +158,7 @@ class SOAP extends AbstractAPI
      *
      * @return SoapClient
      */
-    public function connect()
+    public function connect(): SoapClient
     {
         $opts = [
             'ssl' => ['verify_peer' => false, 'verify_peer_name' => false],
@@ -193,7 +193,7 @@ class SOAP extends AbstractAPI
      *
      * @return string cache key
      */
-    private function getCacheKey(string $xml)
+    private function getCacheKey(string $xml): string
     {
         return 'sightline_soap_' . sha1($xml);
     }

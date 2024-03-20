@@ -11,7 +11,7 @@
 namespace Robwdwd\SightlineApiBundle;
 
 use DomDocument;
-use Robwdwd\SightlineApiBundle\Exception\ArborApiException;
+use Robwdwd\SightlineApiBundle\Exception\SightlineApiException;
 use SimpleXMLElement;
 
 /**
@@ -30,7 +30,7 @@ abstract class AbstractAPI
      *
      * @return SimpleXMLElement XML traffic data
      */
-    abstract public function getTrafficXML(string $queryXML);
+    abstract public function getTrafficXML(string $queryXML): SimpleXMLElement;
 
     /**
      * Get traffic graph from Sightline using the web services API.
@@ -38,9 +38,9 @@ abstract class AbstractAPI
      * @param string $queryXML Query XML string
      * @param string $graphXML Graph format XML string
      *
-     * @return string returns a PNG image
+     * @return string returns a PNG image (as a string)
      */
-    abstract public function getTrafficGraph(string $queryXML, string $graphXML);
+    abstract public function getTrafficGraph(string $queryXML, string $graphXML): string;
 
     /**
      * Get Peer Managed object traffic graph from Sightline. This is a detail graph with in, out, total.
@@ -52,7 +52,7 @@ abstract class AbstractAPI
      *
      * @return string returns a PNG image
      */
-    public function getPeerTrafficGraph(int $sightlineID, string $title, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getPeerTrafficGraph(int $sightlineID, string $title, string $startDate = '7 days ago', string $endDate = 'now'): string
     {
         $filters = [
             ['type' => 'peer', 'value' => $sightlineID, 'binby' => false],
@@ -73,7 +73,7 @@ abstract class AbstractAPI
      *
      * @return string returns a PNG image
      */
-    public function getAsPathTrafficGraph(string $asPath, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getAsPathTrafficGraph(string $asPath, string $startDate = '7 days ago', string $endDate = 'now'): string
     {
         $filters = [
             ['type' => 'aspath', 'value' => $asPath, 'binby' => true],
@@ -94,7 +94,7 @@ abstract class AbstractAPI
      *
      * @return SimpleXMLElement Traffic data XML
      */
-    public function getAsPathTrafficXML(string $asPath, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getAsPathTrafficXML(string $asPath, string $startDate = '7 days ago', string $endDate = 'now'): SimpleXMLElement
     {
         $filters = [
             ['type' => 'aspath', 'value' => $asPath, 'binby' => true],
@@ -115,7 +115,7 @@ abstract class AbstractAPI
      *
      * @return string returns a PNG image
      */
-    public function getIntfTrafficGraph(int $sightlineID, string $title, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getIntfTrafficGraph(int $sightlineID, string $title, string $startDate = '7 days ago', string $endDate = 'now'): string
     {
         $filters = [
             ['type' => 'interface', 'value' => $sightlineID, 'binby' => false],
@@ -144,7 +144,7 @@ abstract class AbstractAPI
         string $title,
         string $startDate = '7 days ago',
         string $endDate = 'now'
-    ) {
+    ): string {
         sort($interfaceIds, SORT_NUMERIC);
 
         $filters = [
@@ -167,10 +167,14 @@ abstract class AbstractAPI
      * @param string $startDate    Start date for the graph
      * @param string $endDate      End date for the graph
      *
-     * @return SimpleXMLElement returns traffic data XML
+     * @return SimpleXMLElement Traffic data XML
      */
-    public function getInterfaceAsPathTrafficXML(string $asPath, array $interfaceIds, string $startDate = '7 days ago', string $endDate = 'now')
-    {
+    public function getInterfaceAsPathTrafficXML(
+        string $asPath,
+        array $interfaceIds,
+        string $startDate = '7 days ago',
+        string $endDate = 'now'
+    ): SimpleXMLElement {
         sort($interfaceIds, SORT_NUMERIC);
         $filters = [
             ['type' => 'interface', 'value' => $interfaceIds, 'binby' => true],
@@ -190,9 +194,9 @@ abstract class AbstractAPI
      * @param string $startDate   Start date for the graph
      * @param string $endDate     End date for the graph
      *
-     * @return string returns a PNG image
+     * @return string A PNG image as a string
      */
-    public function getIntfAsnTrafficGraph(int $interfaceId, string $title, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getIntfAsnTrafficGraph(int $interfaceId, string $title, string $startDate = '7 days ago', string $endDate = 'now'): string
     {
         $filters = [
             ['type' => 'interface', 'value' => $interfaceId, 'binby' => false],
@@ -213,9 +217,9 @@ abstract class AbstractAPI
      * @param string $startDate   Start date for the graph
      * @param string $endDate     End date for the graph
      *
-     * @return SimpleXMLElement returns traffic data XML
+     * @return SimpleXMLElement  Traffic data XML
      */
-    public function getIntfAsnTrafficXML(int $interfaceId, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getIntfAsnTrafficXML(int $interfaceId, string $startDate = '7 days ago', string $endDate = 'now'): SimpleXMLElement
     {
         $filters = [
             ['type' => 'interface', 'value' => $interfaceId, 'binby' => false],
@@ -236,10 +240,15 @@ abstract class AbstractAPI
      * @param string $unitType  Units of data to gather. bps or pps.
      * @param array  $classes   Classes of data to gather. in, out, total, backbone, dropped.
      *
-     * @return string returns a XML string used to Query the WS API
+     * @return string An XML string used to Query the WS API
      */
-    public function buildQueryXML(array $filters, string $startDate = '7 days ago', string $endDate = 'now', string $unitType = 'bps', array $classes = [])
-    {
+    public function buildQueryXML(
+        array $filters,
+        string $startDate = '7 days ago',
+        string $endDate = 'now',
+        string $unitType = 'bps',
+        array $classes = []
+    ): string {
         $queryXML = $this->getBaseXML();
         $baseNode = $queryXML->firstChild;
 
@@ -285,7 +294,13 @@ abstract class AbstractAPI
             }
         }
 
-        return $queryXML->saveXML();
+        $xml = $queryXML->saveXML();
+
+        if (false === $xml) {
+            throw new SightlineApiException('Error creating query XML');
+        }
+
+        return $xml;
     }
 
     /**
@@ -297,9 +312,9 @@ abstract class AbstractAPI
      * @param int    $width  graph width
      * @param int    $height graph height
      *
-     * @return string returns a XML string used to configure the graph returned by the WS API
+     * @return string A XML string used to configure the graph returned by the WS API
      */
-    public function buildGraphXML(string $title, string $yLabel, $detail = false, int $width = 986, int $height = 180)
+    public function buildGraphXML(string $title, string $yLabel, bool $detail = false, int $width = 986, int $height = 180): string
     {
         $graphXML = $this->getBaseXML();
         $baseNode = $graphXML->firstChild;
@@ -318,7 +333,13 @@ abstract class AbstractAPI
             $graphNode->appendChild($graphXML->createElement('type', 'detail'));
         }
 
-        return $graphXML->saveXML();
+        $xml = $graphXML->saveXML();
+
+        if (false === $xml) {
+            throw new SightlineApiException('Error creating graph XML');
+        }
+
+        return $xml;
     }
 
     /**
@@ -326,17 +347,15 @@ abstract class AbstractAPI
      *
      * @param bool $cacheOn Cache or not
      */
-    public function setShouldCache(bool $cacheOn)
+    public function setShouldCache(bool $cacheOn): void
     {
         $this->shouldCache = $cacheOn;
     }
 
     /**
-     * Handle error messages.
-     *
-     * @return SimpleXMLElement
+     * Handle XML result output.
      */
-    public function handleResult(string $output)
+    public function handleResult(string $output): SimpleXMLElement
     {
         $outXML = new SimpleXMLElement($output);
 
@@ -349,7 +368,7 @@ abstract class AbstractAPI
                 $errorMessage .= (string) $error . "\n";
             }
 
-            throw new ArborApiException($errorMessage);
+            throw new SightlineApiException($errorMessage);
         }
 
         return $outXML;
@@ -360,7 +379,7 @@ abstract class AbstractAPI
      *
      * @return DomDocument The DOM document to use as the base XML
      */
-    private function getBaseXML()
+    private function getBaseXML(): DomDocument
     {
         $baseXML = new DomDocument('1.0', 'UTF-8');
         $baseXML->formatOutput = true;
@@ -377,11 +396,16 @@ abstract class AbstractAPI
      * @param array       $filter the filter array to build the filter node for the XML
      * @param DomDocument $xmlDOM the DOMDocument object
      *
-     * @return DomDocument the DOM element to include in the query XML
+     * @return DomDocument The DOM element to include in the query XML
      */
-    private function addQueryFilter(array $filter, $xmlDOM)
+    private function addQueryFilter(array $filter, $xmlDOM): DomDocument
     {
         $filterNode = $xmlDOM->createElement('filter');
+
+        if (!$filterNode instanceof DomDocument) {
+            throw new SightlineApiException('Error creating XML');
+        }
+
         $filterNode->setAttribute('type', $filter['type']);
 
         if (true === $filter['binby']) {
