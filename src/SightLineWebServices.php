@@ -21,7 +21,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class SightLineWebServices extends AbstractAPI
+class SightlineWebServices extends AbstractAPI
 {
     private readonly string $wsKey;
 
