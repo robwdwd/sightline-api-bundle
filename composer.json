@@ -1,0 +1,49 @@
+{
+    "name": "robwdwd/sightline-api-bundle",
+    "type": "symfony-bundle",
+    "description": "Sightline API Symfony Bundle.",
+    "keywords": [
+        "arbor",
+        "netscout",
+        "ArborSP",
+        "arbor sightline",
+        "sightline",
+        "peakflow",
+        "networking",
+        "security",
+        "ddos",
+        "symfony",
+        "symfony bundle"
+    ],
+    "homepage": "https://github.com/robwdwd/sightline-api-bundle",
+    "license": "MIT",
+    "authors": [{
+        "name": "Rob Woodward",
+        "homepage": "https://github.com/robwdwd",
+        "email": "rob@twfmail.uk",
+        "role": "Author"
+    }],
+    "autoload": {
+        "psr-4": {
+            "Robwdwd\\SightlineApiBundle\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "ext-dom": "*",
+        "ext-soap": "*",
+        "symfony/config": ">=6.0",
+        "symfony/cache": ">=6.0",
+        "symfony/dependency-injection": ">=6.0",
+        "symfony/framework-bundle": ">=6.0",
+        "symfony/http-client": ">=6.0"
+    },
+    "require-dev": {
+        "rector/rector": "^1.0.3"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "2.0.x-dev"
+        }
+    }
+}

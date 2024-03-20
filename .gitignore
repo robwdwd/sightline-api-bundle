@@ -1,0 +1,4 @@
+/.project
+.php_cs.cache
+vendor/*
+.php-cs-fixer.cache

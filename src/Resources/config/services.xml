@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+  <services>
+    <service id="robwdwd_sightline_api.ws" class="Robwdwd\SightlineApiBundle\WS" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.soap" class="Robwdwd\SightlineApiBundle\SOAP" public="true">
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.rest.rest" class="Robwdwd\SightlineApiBundle\Rest\REST" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.rest.paged" class="Robwdwd\SightlineApiBundle\Rest\Paged" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.rest.managed_object" class="Robwdwd\SightlineApiBundle\Rest\ManagedObject" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.rest.mitigation_template" class="Robwdwd\SightlineApiBundle\Rest\MitigationTemplate" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.rest.notification_group" class="Robwdwd\SightlineApiBundle\Rest\NotificationGroup" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+    <service id="robwdwd_sightline_api.rest.traffic_query" class="Robwdwd\SightlineApiBundle\Rest\TrafficQuery" public="true">
+      <argument type="service" id="http_client"/>
+      <argument type="service" id="cache.app"/>
+    </service>
+
+    <service id="Robwdwd\SightlineApiBundle\WS" alias="robwdwd_sightline_api.ws"/>
+    <service id="Robwdwd\SightlineApiBundle\SOAP" alias="robwdwd_sightline_api.soap"/>
+    <service id="Robwdwd\SightlineApiBundle\Rest\REST" alias="robwdwd_sightline_api.rest.rest"/>
+    <service id="Robwdwd\SightlineApiBundle\Rest\Paged" alias="robwdwd_sightline_api.rest.paged"/>
+    <service id="Robwdwd\SightlineApiBundle\Rest\ManagedObject" alias="robwdwd_sightline_api.rest.managed_object"/>
+    <service id="Robwdwd\SightlineApiBundle\Rest\MitigationTemplate" alias="robwdwd_sightline_api.rest.mitigation_template"/>
+    <service id="Robwdwd\SightlineApiBundle\Rest\NotificationGroup" alias="robwdwd_sightline_api.rest.notification_group"/>
+    <service id="Robwdwd\SightlineApiBundle\Rest\TrafficQuery" alias="robwdwd_sightline_api.rest.traffic_query"/>
+  </services>
+</container>
