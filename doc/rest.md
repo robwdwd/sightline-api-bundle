@@ -27,9 +27,9 @@ documentation for a list of valid endpoints.
 The following example gets Managed object data for a peer.
 
 ```php
-use Robwdwd\SightlineApiBundle\REST\Rest as SightlineRest;
+use Robwdwd\SightlineApiBundle\REST\SightlineRestApi;
 
-public function show(Peer $peer, Request $request, SightlineRest $sightlineRest): Response
+public function show(Peer $peer, Request $request, SightlineRestApi $sightlineRest): Response
 {
     if ($peer->getSightlineMoId()) {
         $sightlineMO = $sightlineRest->getByID('managed_objects', $peer->getSightlineMoId());
@@ -44,10 +44,10 @@ Seperate classes are available for Managed Objects, Mitigation Templates,
 Notification groups and Traffic Queries.
 
 ```php
-use Robwdwd\SightlineApiBundle\Rest\ManagedObject;
-use Robwdwd\SightlineApiBundle\Rest\MitigationTemplate;
-use Robwdwd\SightlineApiBundle\Rest\NotificationGroup;
-use Robwdwd\SightlineApiBundle\Rest\TrafficQuery;
+use Robwdwd\SightlineApiBundle\Rest\SightlineManagedObjectApi;
+use Robwdwd\SightlineApiBundle\Rest\SightlineMitigationTemplateApi;
+use Robwdwd\SightlineApiBundle\Rest\SightlineNotificationGroupApi;
+use Robwdwd\SightlineApiBundle\Rest\SightlineTrafficQueryApi;
 ```
 
 ## Traffic Queries
@@ -60,7 +60,7 @@ Building a traffic query json to send to Sightline REST API can be done with the
 
 ```php
 
-use Robwdwd\SightlineApiBundle\Rest\TrafficQuery;
+use Robwdwd\SightlineApiBundle\Rest\SightlineTrafficQueryApi;
 
 // Get traffic for peer managed object.
 //
@@ -114,7 +114,7 @@ a string.
 The following gets all peer managed objects retrieving 25 per page.
 
 ```php
-public function list(Request $request ManagedObject $managedObject): Response
+public function list(Request $request, SightlineManagedObjectApi $managedObject): Response
 {
     $filter = ['type' => 'a', 'operator' => 'eq', 'field' => 'family', 'search' => 'peer'];
 
@@ -128,7 +128,7 @@ The following gets all managed objects matching SomeNetwork as the name
 (this would be just one).
 
 ```php
-public function list(Request $request ManagedObject $managedObject): Response
+public function list(Request $request, SightlineManagedObjectApi $managedObject): Response
 {
 
     $sightlineMOs = $managedObject->getManagedObjects('name', 'SomeNetwork');
@@ -146,7 +146,7 @@ specificys on what fields the attributes and relationships can have
 check the SightlineREST documentation.
 
 ```php
-public function updateMo(Peer $peer, ManagedObject $managedObject): Response
+public function updateMo(Peer $peer, SightlineManagedObjectApi $managedObject): Response
 {
     if ($peer->getSightlineMoId()) {
         $sightlinePeer = $peerRepository->getForSightline($peer->getId());
@@ -195,7 +195,7 @@ public function updateMo(Peer $peer, ManagedObject $managedObject): Response
 The following gets a notification group.
 
 ```php
-public function list(Request $request NotificationGroup $ng): Response
+public function list(Request $request, SightlineNotificationGroupApi $ng): Response
 {
     $SightlineNG = $ng->getNotificationGroups('name', 'Group1');
     dump ($SightlineNG);
@@ -208,9 +208,9 @@ Mitigation templates can be updated, changed and copied in the same way as manag
 
 ```php
 
-use Robwdwd\SightlineApiBundle\Rest\MitigationTemplate;
+use Robwdwd\SightlineApiBundle\Rest\SightlineMitigationTemplateApi;
 
-public function updateMo(Peer $peer, MitigationTemplate $mitigationTemplate): Response
+public function updateMo(Peer $peer, SightlineMitigationTemplateApi $mitigationTemplate): Response
 {
     $templateID = 1; // Template to copy from
     $newName = 'Copied Template';
@@ -231,7 +231,7 @@ The following retrieves all customer managed objects from the Sightline
 Leader.
 
 ```php
-public function list(Request $request SightlineRest $sightlineRest): Response
+public function list(Request $request, SightlineRestApi $sightlineRest): Response
 {
 
     $sightlineMOs = $sightlineRest->findRest('managed_objects', 'family', 'customer');
@@ -249,7 +249,10 @@ Similar to findRest() except this returns results one page a time.
 The following retrieves interface lists for sightline
 
 ```php
-public function list(Request $request SightlineRest $sightlineRest): Response
+
+use Robwdwd\SightlineApiBundle\Rest\SightlineRestPagedApi; 
+
+public function list(Request $request, SightlineRestPagedApi $sightlineRestPaged): Response
 {
     // findRestPaged(string $endpoint, array $filters = null, int $perPage = 50, bool $commitFlag = false)
     $sightlineRestPaged->findRestPaged('traffic_query_facet_values/interfaces', null, 200, true);

@@ -15,7 +15,7 @@ namespace Robwdwd\SightlineApiBundle\Rest;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class ManagedObject extends REST
+class SightlineManagedObjectApi extends SightlineRestApi
 {
     protected $cacheKeyPrefix = 'sightline_rest_managed_object';
 

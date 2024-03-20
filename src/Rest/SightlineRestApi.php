@@ -21,7 +21,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class REST
+class SightlineRestApi
 {
     protected readonly string $url;
 

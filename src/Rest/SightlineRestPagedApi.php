@@ -17,7 +17,7 @@ use Robwdwd\SightlineApiBundle\Exception\SightlineApiException;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class Paged extends REST
+class SightlineRestPagedApi extends SightlineRestApi
 {
     protected $cacheKeyPrefix = 'sightline_rest_paged';
 

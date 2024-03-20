@@ -15,7 +15,7 @@ namespace Robwdwd\SightlineApiBundle\Rest;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class MitigationTemplate extends REST
+class SightlineMitigationTemplateApi extends SightlineRestApi
 {
     protected $cacheKeyPrefix = 'sightline_rest_mt';
 

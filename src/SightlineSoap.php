@@ -21,7 +21,7 @@ use SoapFault;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class SOAP extends AbstractAPI
+class SightlineSoap extends AbstractAPI
 {
     private readonly string $hostname;
 

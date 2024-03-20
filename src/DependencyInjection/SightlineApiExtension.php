@@ -25,28 +25,28 @@ class SightlineApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $definitionWS = $containerBuilder->getDefinition('robwdwd_sightline_api.ws');
-        $definitionWS->setArgument(2, $config);
+        $definitionWebServices = $containerBuilder->getDefinition('robwdwd_sightline_api.sightline_web_services');
+        $definitionWebServices->setArgument(2, $config);
 
-        $definitionSOAP = $containerBuilder->getDefinition('robwdwd_sightline_api.soap');
+        $definitionSOAP = $containerBuilder->getDefinition('robwdwd_sightline_api.sightline_soap');
         $definitionSOAP->setArgument(1, $config);
 
-        $definitionRS = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.rest');
+        $definitionRS = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.sightline_rest_api');
         $definitionRS->setArgument(2, $config);
 
-        $definitionRS = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.paged');
+        $definitionRS = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.sightline_rest_paged_api');
         $definitionRS->setArgument(2, $config);
 
-        $definitionRSMO = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.managed_object');
+        $definitionRSMO = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.sightline_managed_object_api');
         $definitionRSMO->setArgument(2, $config);
 
-        $definitionRSMT = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.mitigation_template');
+        $definitionRSMT = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.sightline_mitigation_template_api');
         $definitionRSMT->setArgument(2, $config);
 
-        $definitionRSNG = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.notification_group');
+        $definitionRSNG = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.sightline_notification_group_api');
         $definitionRSNG->setArgument(2, $config);
 
-        $definitionRSTQ = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.traffic_query');
+        $definitionRSTQ = $containerBuilder->getDefinition('robwdwd_sightline_api.rest.sightline_traffic_query_api');
         $definitionRSTQ->setArgument(2, $config);
     }
 }

@@ -17,7 +17,7 @@ use DateTime;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class TrafficQuery extends REST
+class SightlineTrafficQueryApi extends SightlineRestApi
 {
     protected $cacheKeyPrefix = 'sightline_rest_tquery';
 

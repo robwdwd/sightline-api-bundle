@@ -15,7 +15,7 @@ namespace Robwdwd\SightlineApiBundle\Rest;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class NotificationGroup extends REST
+class SightlineNotificationGroupApi extends SightlineRestApi
 {
     protected $cacheKeyPrefix = 'sightline_rest_ng';
 
