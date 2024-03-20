@@ -103,7 +103,7 @@ class Paged extends REST
     /**
      * Get current data from the API request.
      */
-    public function getCurrentData()
+    public function getCurrentData(): array
     {
         return $this->currentData;
     }
@@ -111,7 +111,7 @@ class Paged extends REST
     /**
      *  Get the current page number.
      */
-    public function getCurrentPageNumber()
+    public function getCurrentPageNumber(): int
     {
         return $this->currentPage;
     }
