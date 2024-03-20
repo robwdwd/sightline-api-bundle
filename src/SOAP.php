@@ -155,8 +155,6 @@ class SOAP extends AbstractAPI
 
     /**
      * Connect to the Sightline SOAP API.
-     *
-     * @return SoapClient
      */
     public function connect(): SoapClient
     {

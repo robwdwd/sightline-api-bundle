@@ -217,7 +217,7 @@ abstract class AbstractAPI
      * @param string $startDate   Start date for the graph
      * @param string $endDate     End date for the graph
      *
-     * @return SimpleXMLElement  Traffic data XML
+     * @return SimpleXMLElement Traffic data XML
      */
     public function getIntfAsnTrafficXML(int $interfaceId, string $startDate = '7 days ago', string $endDate = 'now'): SimpleXMLElement
     {
