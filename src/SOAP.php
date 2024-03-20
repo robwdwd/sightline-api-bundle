@@ -36,9 +36,9 @@ class SOAP extends AbstractAPI
     private bool $shouldCache = true;
 
     /**
-     * @param CacheInterface $cache
+     * @param CacheInterface $cacheItemPool
      */
-    public function __construct(private readonly CacheItemPoolInterface $cache, array $config)
+    public function __construct(private readonly CacheItemPoolInterface $cacheItemPool, array $config)
     {
         $this->hostname = $config['hostname'];
         $this->username = $config['username'];
@@ -60,8 +60,8 @@ class SOAP extends AbstractAPI
     public function getTrafficGraph(string $queryXML, string $graphXML): string
     {
         $cachedItem = null;
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getCacheKey($queryXML . $graphXML));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getCacheKey($queryXML . $graphXML));
 
             if ($cachedItem->isHit()) {
                 return $cachedItem->get();
@@ -72,18 +72,18 @@ class SOAP extends AbstractAPI
 
         try {
             $result = $soapClient->getTrafficGraph($queryXML, $graphXML);
-        } catch (SoapFault $th) {
-            throw new SightlineApiException('Error getting traffic graph.', 0, $th);
+        } catch (SoapFault $soapFault) {
+            throw new SightlineApiException('Error getting traffic graph.', 0, $soapFault);
         }
 
         $fileInfo = finfo_open();
         $mimeType = finfo_buffer($fileInfo, $result, FILEINFO_MIME_TYPE);
 
         if ('image/png' === $mimeType) {
-            if (true === $this->shouldCache) {
+            if ($this->shouldCache) {
                 $cachedItem->expiresAfter($this->cacheTtl);
                 $cachedItem->set($result);
-                $this->cache->save($cachedItem);
+                $this->cacheItemPool->save($cachedItem);
             }
 
             return $result;
@@ -105,8 +105,8 @@ class SOAP extends AbstractAPI
     public function getTrafficXML(string $queryXML): SimpleXMLElement
     {
         $cachedItem = null;
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getCacheKey($queryXML));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getCacheKey($queryXML));
 
             if ($cachedItem->isHit()) {
                 return new SimpleXMLElement($cachedItem->get());
@@ -117,18 +117,18 @@ class SOAP extends AbstractAPI
 
         try {
             $result = $soapClient->runXmlQuery($queryXML, 'xml');
-        } catch (SoapFault $th) {
-            throw new SightlineApiException('Error getting traffic xml.', 0, $th);
+        } catch (SoapFault $soapFault) {
+            throw new SightlineApiException('Error getting traffic xml.', 0, $soapFault);
         }
 
         $outXML = $this->handleResult($result);
 
         // If there is a valid result, store in cache.
         //
-        if (true === $this->shouldCache) {
+        if ($this->shouldCache) {
             $cachedItem->expiresAfter($this->cacheTtl);
             $cachedItem->set($outXML->asXml());
-            $this->cache->save($cachedItem);
+            $this->cacheItemPool->save($cachedItem);
         }
 
         return $outXML;
@@ -148,8 +148,8 @@ class SOAP extends AbstractAPI
 
         try {
             return $soapClient->cliRun($command, $timeout);
-        } catch (SoapFault $th) {
-            throw new SightlineApiException('Error connecting to CLI.', 0, $th);
+        } catch (SoapFault $soapFault) {
+            throw new SightlineApiException('Error connecting to CLI.', 0, $soapFault);
         }
     }
 
@@ -171,7 +171,7 @@ class SOAP extends AbstractAPI
             'trace' => 1,
             'connection_timeout' => 180,
             'stream_context' => stream_context_create($opts),
-            'location' => "https://$this->hostname/soap/sp",
+            'location' => sprintf('https://%s/soap/sp', $this->hostname),
             'login' => $this->username,
             'password' => $this->password,
             'authentication' => SOAP_AUTHENTICATION_DIGEST,
@@ -179,8 +179,8 @@ class SOAP extends AbstractAPI
 
         try {
             return new SoapClient($this->wsdl, $params);
-        } catch (SoapFault $th) {
-            throw new SightlineApiException('Unable to connect to Sightline API.', 0, $th);
+        } catch (SoapFault $soapFault) {
+            throw new SightlineApiException('Unable to connect to Sightline API.', 0, $soapFault);
         }
     }
 

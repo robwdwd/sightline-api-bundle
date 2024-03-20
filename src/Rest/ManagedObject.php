@@ -27,7 +27,7 @@ class ManagedObject extends REST
      *
      * @return array Returns an array with the records from the API
      */
-    public function getManagedObjects(?array $filters = null, int $perPage = 50)
+    public function getManagedObjects(?array $filters = null, int $perPage = 50): array
     {
         return $this->findRest('managed_objects', $filters, $perPage);
     }
@@ -53,7 +53,7 @@ class ManagedObject extends REST
         string $match,
         ?array $relationships = null,
         ?array $extraAttributes = null
-    ) {
+    ): array {
         $url = $this->url . '/managed_objects/';
 
         // Disable host detection settings in relationship unless
@@ -82,11 +82,7 @@ class ManagedObject extends REST
 
         // Merge in extra attributes for this managed object
         //
-        if (null === $extraAttributes) {
-            $attributes = $requiredAttributes;
-        } else {
-            $attributes = array_merge($requiredAttributes, $extraAttributes);
-        }
+        $attributes = null === $extraAttributes ? $requiredAttributes : array_merge($requiredAttributes, $extraAttributes);
 
         // Create the full managed object data to be converted to json.
         //
@@ -114,7 +110,7 @@ class ManagedObject extends REST
      *
      * @return array the output of the API call
      */
-    public function changeManagedObject(string $sightlineID, array $attributes, ?array $relationships = null)
+    public function changeManagedObject(string $sightlineID, array $attributes, ?array $relationships = null): array
     {
         $url = $this->url . '/managed_objects/' . $sightlineID;
 

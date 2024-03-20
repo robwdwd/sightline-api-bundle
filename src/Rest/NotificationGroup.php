@@ -27,7 +27,7 @@ class NotificationGroup extends REST
      *
      * @return array the output of the API call
      */
-    public function getNotificationGroups(?array $filters = null, int $perPage = 50)
+    public function getNotificationGroups(?array $filters = null, int $perPage = 50): array
     {
         return $this->findRest('notification_groups', $filters, $perPage);
     }
@@ -41,7 +41,7 @@ class NotificationGroup extends REST
      *
      * @return array the output of the API call
      */
-    public function createNotificationGroup(string $name, ?array $emailAddresses = null, ?array $extraAttributes = null)
+    public function createNotificationGroup(string $name, ?array $emailAddresses = null, ?array $extraAttributes = null): array
     {
         $url = $this->url . '/notification_groups/';
 
@@ -55,11 +55,7 @@ class NotificationGroup extends REST
 
         // Merge in extra attributes for this managed object
         //
-        if (null === $extraAttributes) {
-            $attributes = $requiredAttributes;
-        } else {
-            $attributes = array_merge($requiredAttributes, $extraAttributes);
-        }
+        $attributes = null === $extraAttributes ? $requiredAttributes : array_merge($requiredAttributes, $extraAttributes);
 
         // Create the full managed object data to be converted to json.
         //
@@ -85,7 +81,7 @@ class NotificationGroup extends REST
      *
      * @return array the output of the API call
      */
-    public function changeNotificationGroup(string $sightlineID, array $attributes)
+    public function changeNotificationGroup(string $sightlineID, array $attributes): array
     {
         $url = $this->url . '/notification_groups/' . $sightlineID;
 

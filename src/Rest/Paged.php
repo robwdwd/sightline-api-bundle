@@ -57,7 +57,7 @@ class Paged extends REST
         $this->ourArgs['perPage'] = $perPage;
         $this->ourArgs['page'] = 1;
 
-        if (true === $commitFlag) {
+        if ($commitFlag) {
             $this->ourArgs['config'] = 'committed';
         }
 

@@ -249,52 +249,52 @@ abstract class AbstractAPI
         string $unitType = 'bps',
         array $classes = []
     ): string {
-        $queryXML = $this->getBaseXML();
-        $baseNode = $queryXML->firstChild;
+        $domDocument = $this->getBaseXML();
+        $baseNode = $domDocument->firstChild;
 
         // Create Query Node.
-        $queryNode = $queryXML->createElement('query');
+        $queryNode = $domDocument->createElement('query');
         $queryNode->setAttribute('type', 'traffic');
+
         $baseNode->appendChild($queryNode);
 
         // Create time Node.
-        $timeNode = $queryXML->createElement('time');
+        $timeNode = $domDocument->createElement('time');
         $timeNode->setAttribute('end_ascii', $endDate);
         $timeNode->setAttribute('start_ascii', $startDate);
+
         $queryNode->appendChild($timeNode);
 
         // Create unit node.
-        $unitNode = $queryXML->createElement('unit');
+        $unitNode = $domDocument->createElement('unit');
         $unitNode->setAttribute('type', $unitType);
+
         $queryNode->appendChild($unitNode);
 
         // Create search node.
-        $searchNode = $queryXML->createElement('search');
+        $searchNode = $domDocument->createElement('search');
         $searchNode->setAttribute('timeout', 30);
         $searchNode->setAttribute('limit', 200);
+
         $queryNode->appendChild($searchNode);
 
         // Add the class nodes
-        if (!empty($classes)) {
-            foreach ($classes as $class) {
-                $classNode = $queryXML->createElement('class', $class);
-                $queryNode->appendChild($classNode);
-            }
+        foreach ($classes as $class) {
+            $classNode = $domDocument->createElement('class', $class);
+            $queryNode->appendChild($classNode);
         }
 
         // Add the filters.
-        if (!empty($filters)) {
-            foreach ($filters as $filter) {
-                if (isset($filter['type'])) {
-                    $filterNode = $this->addQueryFilter($filter, $queryXML);
-                    if ($filterNode) {
-                        $queryNode->appendChild($filterNode);
-                    }
+        foreach ($filters as $filter) {
+            if (isset($filter['type'])) {
+                $filterNode = $this->addQueryFilter($filter, $domDocument);
+                if ($filterNode) {
+                    $queryNode->appendChild($filterNode);
                 }
             }
         }
 
-        $xml = $queryXML->saveXML();
+        $xml = $domDocument->saveXML();
 
         if (false === $xml) {
             throw new SightlineApiException('Error creating query XML');
@@ -316,24 +316,25 @@ abstract class AbstractAPI
      */
     public function buildGraphXML(string $title, string $yLabel, bool $detail = false, int $width = 986, int $height = 180): string
     {
-        $graphXML = $this->getBaseXML();
-        $baseNode = $graphXML->firstChild;
+        $domDocument = $this->getBaseXML();
+        $baseNode = $domDocument->firstChild;
 
-        $graphNode = $graphXML->createElement('graph');
+        $graphNode = $domDocument->createElement('graph');
         $graphNode->setAttribute('id', 'graph1');
+
         $baseNode->appendChild($graphNode);
 
-        $graphNode->appendChild($graphXML->createElement('title', $title));
-        $graphNode->appendChild($graphXML->createElement('ylabel', $yLabel));
-        $graphNode->appendChild($graphXML->createElement('width', $width));
-        $graphNode->appendChild($graphXML->createElement('height', $height));
-        $graphNode->appendChild($graphXML->createElement('legend', 1));
+        $graphNode->appendChild($domDocument->createElement('title', $title));
+        $graphNode->appendChild($domDocument->createElement('ylabel', $yLabel));
+        $graphNode->appendChild($domDocument->createElement('width', $width));
+        $graphNode->appendChild($domDocument->createElement('height', $height));
+        $graphNode->appendChild($domDocument->createElement('legend', 1));
 
-        if (true === $detail) {
-            $graphNode->appendChild($graphXML->createElement('type', 'detail'));
+        if ($detail) {
+            $graphNode->appendChild($domDocument->createElement('type', 'detail'));
         }
 
-        $xml = $graphXML->saveXML();
+        $xml = $domDocument->saveXML();
 
         if (false === $xml) {
             throw new SightlineApiException('Error creating graph XML');
@@ -365,7 +366,7 @@ abstract class AbstractAPI
         if ($outXML->{'error-line'}) {
             $errorMessage = '';
             foreach ($outXML->{'error-line'} as $error) {
-                $errorMessage .= (string) $error . "\n";
+                $errorMessage .= $error . "\n";
             }
 
             throw new SightlineApiException($errorMessage);
@@ -381,51 +382,52 @@ abstract class AbstractAPI
      */
     private function getBaseXML(): DomDocument
     {
-        $baseXML = new DomDocument('1.0', 'UTF-8');
-        $baseXML->formatOutput = true;
-        $peakflowNode = $baseXML->createElement('peakflow');
+        $domDocument = new DomDocument('1.0', 'UTF-8');
+        $domDocument->formatOutput = true;
+        $peakflowNode = $domDocument->createElement('peakflow');
         $peakflowNode->setAttribute('version', '2.0');
-        $baseXML->appendChild($peakflowNode);
 
-        return $baseXML;
+        $domDocument->appendChild($peakflowNode);
+
+        return $domDocument;
     }
 
     /**
      * Get a Dom Element for use in the Query XML.
      *
      * @param array       $filter the filter array to build the filter node for the XML
-     * @param DomDocument $xmlDOM the DOMDocument object
+     * @param DomDocument $domDocument the DOMDocument object
      *
      * @return DomDocument The DOM element to include in the query XML
      */
-    private function addQueryFilter(array $filter, $xmlDOM): DomDocument
+    private function addQueryFilter(array $filter, DomDocument $domDocument): DomDocument
     {
-        $filterNode = $xmlDOM->createElement('filter');
+        $domElement = $domDocument->createElement('filter');
 
-        if (!$filterNode instanceof DomDocument) {
+        if (!$domElement instanceof DomDocument) {
             throw new SightlineApiException('Error creating XML');
         }
 
-        $filterNode->setAttribute('type', $filter['type']);
+        $domElement->setAttribute('type', $filter['type']);
 
         if (true === $filter['binby']) {
-            $filterNode->setAttribute('binby', 1);
+            $domElement->setAttribute('binby', 1);
         }
 
         if (null !== $filter['value']) {
             if (is_array($filter['value'])) {
                 foreach ($filter['value'] as $fvalue) {
-                    $instanceNode = $xmlDOM->createElement('instance');
+                    $instanceNode = $domDocument->createElement('instance');
                     $instanceNode->setAttribute('value', $fvalue);
-                    $filterNode->appendChild($instanceNode);
+                    $domElement->appendChild($instanceNode);
                 }
             } else {
-                $instanceNode = $xmlDOM->createElement('instance');
+                $instanceNode = $domDocument->createElement('instance');
                 $instanceNode->setAttribute('value', $filter['value']);
-                $filterNode->appendChild($instanceNode);
+                $domElement->appendChild($instanceNode);
             }
         }
 
-        return $filterNode;
+        return $domElement;
     }
 }

@@ -36,10 +36,10 @@ class REST
     /**
      * Contructor.
      *
-     * @param CacheInterface $cache
+     * @param CacheInterface $cacheItemPool
      * @param array          $config Configuration
      */
-    public function __construct(protected HttpClientInterface $client, protected CacheItemPoolInterface $cache, array $config)
+    public function __construct(protected HttpClientInterface $httpClient, protected CacheItemPoolInterface $cacheItemPool, array $config)
     {
         $this->url = 'https://' . $config['hostname'] . '/api/sp/';
         $this->restToken = $config['resttoken'];
@@ -75,13 +75,13 @@ class REST
      *
      * @return array Results from the API
      */
-    public function findRest(string $endpoint, ?array $filters = null, int $perPage = 50, $commitFlag = false): array
+    public function findRest(string $endpoint, ?array $filters = null, int $perPage = 50, bool $commitFlag = false): array
     {
         $results = [];
 
         $apiResult = $this->doMultiGetRequest($endpoint, $filters, $perPage, $commitFlag);
 
-        if (!$apiResult) {
+        if ($apiResult === []) {
             return $results;
         }
 
@@ -100,7 +100,7 @@ class REST
      *
      * @param bool $cacheOn Cache or not
      */
-    public function setShouldCache(bool $cacheOn)
+    public function setShouldCache(bool $cacheOn): void
     {
         $this->shouldCache = $cacheOn;
     }
@@ -122,8 +122,8 @@ class REST
             $options['query'] = $args;
         }
 
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getCacheKey($url, $args));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getCacheKey($url, $args));
 
             if ($cachedItem->isHit()) {
                 return $cachedItem->get();
@@ -134,10 +134,10 @@ class REST
 
         // If there is a result, store in cache
         //
-        if (true === $this->shouldCache) {
+        if ($this->shouldCache) {
             $cachedItem->expiresAfter($this->cacheTtl);
             $cachedItem->set($result);
-            $this->cache->save($cachedItem);
+            $this->cacheItemPool->save($cachedItem);
         }
 
         return $result;
@@ -147,10 +147,8 @@ class REST
      * Perform multiple requests against the Sightline REST API.
      *
      * @param string $endpoint   endpoint to query against, see Sightline REST API documentation
-     * @param ?array $filters
      * @param int    $perPage    Total number of objects per page. (Default 50)
      * @param bool   $commitFlag Add config=commited to endpoints which require it, default false
-     *
      * @return array Results from the API
      */
     protected function doMultiGetRequest(string $endpoint, ?array $filters = null, int $perPage = 50, bool $commitFlag = false): array
@@ -165,8 +163,8 @@ class REST
         // Get the cache here which will be the whole result set
         // without the pages.
         //
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getCacheKey($url));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getCacheKey($url));
 
             if ($cachedItem->isHit()) {
                 return $cachedItem->get();
@@ -175,7 +173,7 @@ class REST
 
         $args = ['perPage' => $perPage, 'page' => 1];
 
-        if (true === $commitFlag) {
+        if ($commitFlag) {
             $args['config'] = 'committed';
         }
 
@@ -214,17 +212,15 @@ class REST
         // is null (maybe timeout, etc)
         //
         foreach ($responses as $response) {
-            if (null !== $response) {
-                $apiResult[] = $this->getResult($response);
-            }
+            $apiResult[] = $this->getResult($response);
         }
 
         // If caching is enabled add valid result to the cache.
         //
-        if (true === $this->shouldCache) {
+        if ($this->shouldCache) {
             $cachedItem->expiresAfter($this->cacheTtl);
             $cachedItem->set($apiResult);
-            $this->cache->save($cachedItem);
+            $this->cacheItemPool->save($cachedItem);
         }
 
         return $apiResult;
@@ -242,8 +238,8 @@ class REST
     protected function doCachedPostRequest(string $url, string $type = 'POST', ?string $postData = null): array
     {
         $cachedItem = null;
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getPostCacheKey($url, $type, $postData));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getPostCacheKey($url, $type, $postData));
 
             if ($cachedItem->isHit()) {
                 return $cachedItem->get();
@@ -254,10 +250,10 @@ class REST
 
         // Store in cache
         //
-        if (true === $this->shouldCache) {
+        if ($this->shouldCache) {
             $cachedItem->expiresAfter($this->cacheTtl);
             $cachedItem->set($result);
-            $this->cache->save($cachedItem);
+            $this->cacheItemPool->save($cachedItem);
         }
 
         return $result;
@@ -291,16 +287,18 @@ class REST
         if (isset($filters['type'])) {
             return 'filter=' . $filters['type'] . '/' . $filters['field'] . '.' . $filters['operator'] . '.' . $this->searchFilterToUrl($filters['search']);
         }
+
         $filterArgs = [];
 
         foreach ($filters as $filter) {
-            if ('eq' !== $filter['operator'] and 'cn' !== $filter['operator']) {
+            if ('eq' !== $filter['operator'] && 'cn' !== $filter['operator']) {
                 continue;
             }
 
-            if ('a' !== $filter['type'] and 'r' !== $filter['type']) {
+            if ('a' !== $filter['type'] && 'r' !== $filter['type']) {
                 continue;
             }
+
             $filterArgs[] = 'filter[]=' . $filter['type'] . '/' . $filter['field'] . '.' . $filter['operator'] . '.' . $this->searchFilterToUrl($filter['search']);
         }
 
@@ -345,9 +343,9 @@ class REST
             ];
 
         try {
-            return $this->client->request($method, $url, $options);
-        } catch (ExceptionInterface $e) {
-            throw new SightlineApiException('Error connecting to the server.', 0, $e);
+            return $this->httpClient->request($method, $url, $options);
+        } catch (ExceptionInterface $exception) {
+            throw new SightlineApiException('Error connecting to the server.', 0, $exception);
         }
     }
 
@@ -369,11 +367,11 @@ class REST
         // Get the content.
         try {
             $apiResult = $response->toArray(false);
-        } catch (ExceptionInterface $e) {
-            throw new SightlineApiException('Error getting result from server.', 0, $e);
+        } catch (ExceptionInterface $exception) {
+            throw new SightlineApiException('Error getting result from server.', 0, $exception);
         }
 
-        if (empty($apiResult)) {
+        if ($apiResult === []) {
             throw new SightlineApiException('API server returned no data.');
         }
 
@@ -404,12 +402,15 @@ class REST
             if (isset($error['id'])) {
                 $errorMessages .= $error['id'] . "\n ";
             }
+
             if (isset($error['message'])) {
                 $errorMessages .= $error['message'] . "\n ";
             }
+
             if (isset($error['title'])) {
                 $errorMessages .= $error['title'] . "\n ";
             }
+
             if (isset($error['detail'])) {
                 if (isset($error['source']['pointer'])) {
                     $errorMessages .= $error['detail'] . ' : ' . $error['source']['pointer'] . "\n ";

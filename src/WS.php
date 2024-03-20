@@ -32,9 +32,9 @@ class WS extends AbstractAPI
     private bool $shouldCache = true;
 
     /**
-     * @param CacheInterface $cache
+     * @param CacheInterface $cacheItemPool
      */
-    public function __construct(private readonly HttpClientInterface $client, private readonly CacheItemPoolInterface $cache, array $config)
+    public function __construct(private readonly HttpClientInterface $httpClient, private readonly CacheItemPoolInterface $cacheItemPool, array $config)
     {
         $this->url = 'https://' . $config['hostname'] . '/arborws/';
         $this->wsKey = $config['wskey'];
@@ -61,8 +61,8 @@ class WS extends AbstractAPI
             'query' => $queryXML,
         ];
 
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getCacheKey($url, $args));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getCacheKey($url, $args));
             if ($cachedItem->isHit()) {
                 return $cachedItem->get();
             }
@@ -74,10 +74,10 @@ class WS extends AbstractAPI
         $mimeType = finfo_buffer($fileInfo, $output, FILEINFO_MIME_TYPE);
 
         if ('image/png' === $mimeType) {
-            if (true === $this->shouldCache) {
+            if ($this->shouldCache) {
                 $cachedItem->expiresAfter($this->cacheTtl);
                 $cachedItem->set($output);
-                $this->cache->save($cachedItem);
+                $this->cacheItemPool->save($cachedItem);
             }
 
             return $output;
@@ -102,8 +102,8 @@ class WS extends AbstractAPI
             'query' => $queryXML,
         ];
 
-        if (true === $this->shouldCache) {
-            $cachedItem = $this->cache->getItem($this->getCacheKey($url, $args));
+        if ($this->shouldCache) {
+            $cachedItem = $this->cacheItemPool->getItem($this->getCacheKey($url, $args));
 
             if ($cachedItem->isHit()) {
                 return new SimpleXMLElement($cachedItem->get());
@@ -112,10 +112,10 @@ class WS extends AbstractAPI
 
         $outXML = $this->handleResult($this->doHTTPRequest($url, $args));
 
-        if (true === $this->shouldCache) {
+        if ($this->shouldCache) {
             $cachedItem->expiresAfter($this->cacheTtl);
             $cachedItem->set($outXML->asXml());
-            $this->cache->save($cachedItem);
+            $this->cacheItemPool->save($cachedItem);
         }
 
         return $outXML;
@@ -131,10 +131,10 @@ class WS extends AbstractAPI
         $args['api_key'] = $this->wsKey;
 
         try {
-            $response = $this->client->request('GET', $url, ['query' => $args]);
+            $response = $this->httpClient->request('GET', $url, ['query' => $args]);
             $content = $response->getContent();
-        } catch (ExceptionInterface $e) {
-            throw new SightlineApiException('Error in HTTP request', 0, $e);
+        } catch (ExceptionInterface $exception) {
+            throw new SightlineApiException('Error in HTTP request', 0, $exception);
         }
 
         if (empty($content)) {

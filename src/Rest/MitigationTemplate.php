@@ -27,7 +27,7 @@ class MitigationTemplate extends REST
      *
      * @return array the output of the API call
      */
-    public function getMitigationTemplates(?array $filters = null, int $perPage = 50)
+    public function getMitigationTemplates(?array $filters = null, int $perPage = 50): array
     {
         return $this->findRest('mitigation_templates', $filters, $perPage);
     }
@@ -50,9 +50,7 @@ class MitigationTemplate extends REST
             unset($existingTemplate['data']['attributes']['subobject']['ip_location_policing']);
         }
 
-        $out = $this->createMitigationTemplate($name, $existingTemplate['data']['attributes']['ip_version'], $description, $existingTemplate['data']['attributes']['subobject'], $existingTemplate['data']['relationships'], $existingTemplate['data']['attributes']['subtype']);
-
-        return $out;
+        return $this->createMitigationTemplate($name, $existingTemplate['data']['attributes']['ip_version'], $description, $existingTemplate['data']['attributes']['subobject'], $existingTemplate['data']['relationships'], $existingTemplate['data']['attributes']['subtype']);
     }
 
     /**
@@ -68,7 +66,7 @@ class MitigationTemplate extends REST
      *
      * @return array The output of the API call
      */
-    public function createMitigationTemplate(string $name, string $ipVersion, string $description, array $countermeasures, array $relationships = [], string $subtype = 'tms')
+    public function createMitigationTemplate(string $name, string $ipVersion, string $description, array $countermeasures, array $relationships = [], string $subtype = 'tms'): array
     {
         $url = $this->url . '/mitigation_templates/';
 
@@ -109,7 +107,7 @@ class MitigationTemplate extends REST
      *
      * @return array the output of the API call
      */
-    public function changeMitigationTemplate(string $sightlineID, array $attributes, ?array $relationships = null)
+    public function changeMitigationTemplate(string $sightlineID, array $attributes, ?array $relationships = null): array
     {
         $url = $this->url . '/mitigation_templates/' . $sightlineID;
 
