@@ -11,6 +11,7 @@
 namespace Robwdwd\SightlineApiBundle;
 
 use DomDocument;
+use DOMElement;
 use Robwdwd\SightlineApiBundle\Exception\SightlineApiException;
 use SimpleXMLElement;
 
@@ -404,7 +405,7 @@ abstract class AbstractAPI
     {
         $domElement = $domDocument->createElement('filter');
 
-        if (!$domElement instanceof DomDocument) {
+        if (!$domElement instanceof DOMElement) {
             throw new SightlineApiException('Error creating XML');
         }
 
