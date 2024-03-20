@@ -17,7 +17,7 @@ use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
- * Access the Sightline REST and web services API.
+ * Access the Sightline Web Services API.
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
