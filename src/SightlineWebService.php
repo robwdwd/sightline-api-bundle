@@ -138,7 +138,7 @@ class SightlineWebService extends AbstractAPI
             throw new SightlineApiException('Error in HTTP request', 0, $exception);
         }
 
-        if ($content === '' || $content === '0') {
+        if ('' === $content || '0' === $content) {
             throw new SightlineApiException('API Server returned no data.');
         }
 
