@@ -401,7 +401,7 @@ abstract class AbstractAPI
      *
      * @return DomDocument The DOM element to include in the query XML
      */
-    private function addQueryFilter(array $filter, DomDocument $domDocument): DomDocument
+    private function addQueryFilter(array $filter, DomDocument $domDocument): DOMElement
     {
         $domElement = $domDocument->createElement('filter');
 
