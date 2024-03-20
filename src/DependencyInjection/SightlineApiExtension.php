@@ -25,7 +25,7 @@ class SightlineApiExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $definitionWebServices = $containerBuilder->getDefinition('robwdwd_sightline_api.sightline_web_services');
+        $definitionWebServices = $containerBuilder->getDefinition('robwdwd_sightline_api.sightline_web_service');
         $definitionWebServices->setArgument(2, $config);
 
         $definitionSOAP = $containerBuilder->getDefinition('robwdwd_sightline_api.sightline_soap');

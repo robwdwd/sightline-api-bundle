@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Sightline API Bundle.
  *
@@ -21,7 +22,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
  *
  * @author Rob Woodward <rob@twfmail.uk>
  */
-class SightlineWebServices extends AbstractAPI
+class SightlineWebService extends AbstractAPI
 {
     private readonly string $wsKey;
 

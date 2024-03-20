@@ -4,7 +4,7 @@
         http://symfony.com/schema/dic/services/services-1.0.xsd">
 
   <services>
-    <service id="robwdwd_sightline_api.sightline_web_services" class="Robwdwd\SightlineApiBundle\SightlineWebServices" public="true">
+    <service id="robwdwd_sightline_api.sightline_web_service" class="Robwdwd\SightlineApiBundle\SightlineWebService" public="true">
       <argument type="service" id="http_client"/>
       <argument type="service" id="cache.app"/>
     </service>
@@ -36,7 +36,7 @@
       <argument type="service" id="cache.app"/>
     </service>
 
-    <service id="Robwdwd\SightlineApiBundle\SightlineWebServices" alias="robwdwd_sightline_api.sightline_web_services"/>
+    <service id="Robwdwd\SightlineApiBundle\SightlineWebService" alias="robwdwd_sightline_api.sightline_web_service"/>
     <service id="Robwdwd\SightlineApiBundle\SightlineSoap" alias="robwdwd_sightline_api.sightline_soap"/>
     <service id="Robwdwd\SightlineApiBundle\Rest\SightlineRestApi" alias="robwdwd_sightline_api.rest.sightline_rest_api"/>
     <service id="Robwdwd\SightlineApiBundle\Rest\SightlineRestPagedApi" alias="robwdwd_sightline_api.rest.sightline_rest_paged_api"/>
