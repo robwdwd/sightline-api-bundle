@@ -41,7 +41,7 @@ class SightlineMitigationTemplateApi extends SightlineRestApi
      *
      * @return array the output of the API call
      */
-    public function copyMitigationTemplate(string $templateID, string $name, string $description)
+    public function copyMitigationTemplate(string $templateID, string $name, string $description): array
     {
         $existingTemplate = $this->getByID('mitigation_templates', $templateID);
 

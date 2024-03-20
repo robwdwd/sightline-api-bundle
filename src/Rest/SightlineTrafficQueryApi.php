@@ -31,7 +31,7 @@ class SightlineTrafficQueryApi extends SightlineRestApi
      *
      * @return array Traffic Data
      */
-    public function getInterfaceAsPathTraffic(string $asPath, array $interfaces, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getInterfaceAsPathTraffic(string $asPath, array $interfaces, string $startDate = '7 days ago', string $endDate = 'now'): array
     {
         $url = $this->url . '/traffic_queries/';
 
@@ -59,7 +59,7 @@ class SightlineTrafficQueryApi extends SightlineRestApi
      *
      * @return array Traffic data
      */
-    public function getInterfaceAsnTraffic(string $interfaceId, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getInterfaceAsnTraffic(string $interfaceId, string $startDate = '7 days ago', string $endDate = 'now'): array
     {
         $url = $this->url . '/traffic_queries/';
 
@@ -82,7 +82,7 @@ class SightlineTrafficQueryApi extends SightlineRestApi
      *
      * @return array Traffic data
      */
-    public function getAsPathTraffic(string $asPath, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getAsPathTraffic(string $asPath, string $startDate = '7 days ago', string $endDate = 'now'): array
     {
         $url = $this->url . '/traffic_queries/';
 
@@ -104,7 +104,7 @@ class SightlineTrafficQueryApi extends SightlineRestApi
      *
      * @return array Traffic data
      */
-    public function getPeerTraffic(string $peerId, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getPeerTraffic(string $peerId, string $startDate = '7 days ago', string $endDate = 'now'): array
     {
         $url = $this->url . '/traffic_queries/';
 
@@ -126,7 +126,7 @@ class SightlineTrafficQueryApi extends SightlineRestApi
      *
      * @return array Traffic data
      */
-    public function getInterfaceTraffic(string $interfaceId, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getInterfaceTraffic(string $interfaceId, string $startDate = '7 days ago', string $endDate = 'now'): array
     {
         $url = $this->url . '/traffic_queries/';
 
@@ -148,7 +148,7 @@ class SightlineTrafficQueryApi extends SightlineRestApi
      *
      * @return array Traffic data
      */
-    public function getInterfacesTraffic(array $interfaces, string $startDate = '7 days ago', string $endDate = 'now')
+    public function getInterfacesTraffic(array $interfaces, string $startDate = '7 days ago', string $endDate = 'now'): array
     {
         $url = $this->url . '/traffic_queries/';
 
