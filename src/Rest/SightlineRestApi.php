@@ -37,7 +37,7 @@ class SightlineRestApi
      * Contructor.
      *
      * @param CacheInterface $cacheItemPool
-     * @param array          $config Configuration
+     * @param array          $config        Configuration
      */
     public function __construct(protected HttpClientInterface $httpClient, protected CacheItemPoolInterface $cacheItemPool, array $config)
     {
@@ -81,7 +81,7 @@ class SightlineRestApi
 
         $apiResult = $this->doMultiGetRequest($endpoint, $filters, $perPage, $commitFlag);
 
-        if ($apiResult === []) {
+        if ([] === $apiResult) {
             return $results;
         }
 
@@ -149,6 +149,7 @@ class SightlineRestApi
      * @param string $endpoint   endpoint to query against, see Sightline REST API documentation
      * @param int    $perPage    Total number of objects per page. (Default 50)
      * @param bool   $commitFlag Add config=commited to endpoints which require it, default false
+     *
      * @return array Results from the API
      */
     protected function doMultiGetRequest(string $endpoint, ?array $filters = null, int $perPage = 50, bool $commitFlag = false): array
@@ -371,7 +372,7 @@ class SightlineRestApi
             throw new SightlineApiException('Error getting result from server.', 0, $exception);
         }
 
-        if ($apiResult === []) {
+        if ([] === $apiResult) {
             throw new SightlineApiException('API server returned no data.');
         }
 

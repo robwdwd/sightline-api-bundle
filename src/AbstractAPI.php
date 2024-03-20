@@ -395,7 +395,7 @@ abstract class AbstractAPI
     /**
      * Get a Dom Element for use in the Query XML.
      *
-     * @param array       $filter the filter array to build the filter node for the XML
+     * @param array       $filter      the filter array to build the filter node for the XML
      * @param DomDocument $domDocument the DOMDocument object
      *
      * @return DomDocument The DOM element to include in the query XML
