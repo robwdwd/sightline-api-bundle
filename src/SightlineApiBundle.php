@@ -72,5 +72,29 @@ class SightlineApiBundle extends AbstractBundle
     {
         // load an XML, PHP or YAML file
         $container->import('../config/services.xml');
+
+        $definitionWebServices = $$builder->getDefinition('robwdwd_sightline_api.sightline_web_service');
+        $definitionWebServices->setArgument(2, $config);
+
+        $definitionSOAP = $$builder->getDefinition('robwdwd_sightline_api.sightline_soap');
+        $definitionSOAP->setArgument(1, $config);
+
+        $definitionRS = $$builder->getDefinition('robwdwd_sightline_api.rest.sightline_rest_api');
+        $definitionRS->setArgument(2, $config);
+
+        $definitionRS = $$builder->getDefinition('robwdwd_sightline_api.rest.sightline_rest_paged_api');
+        $definitionRS->setArgument(2, $config);
+
+        $definitionRSMO = $$builder->getDefinition('robwdwd_sightline_api.rest.sightline_managed_object_api');
+        $definitionRSMO->setArgument(2, $config);
+
+        $definitionRSMT = $$builder->getDefinition('robwdwd_sightline_api.rest.sightline_mitigation_template_api');
+        $definitionRSMT->setArgument(2, $config);
+
+        $definitionRSNG = $$builder->getDefinition('robwdwd_sightline_api.rest.sightline_notification_group_api');
+        $definitionRSNG->setArgument(2, $config);
+
+        $definitionRSTQ = $$builder->getDefinition('robwdwd_sightline_api.rest.sightline_traffic_query_api');
+        $definitionRSTQ->setArgument(2, $config);
     }
 }
